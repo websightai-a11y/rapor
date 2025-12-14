@@ -23,3 +23,10 @@ export default async function handler(req, res) {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.send(html);
 }
+if (req.method === "GET") {
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  return res.send(`
+    <h2>Endpoint çalışıyor</h2>
+    <p>Bu endpoint POST ile HTML alır.</p>
+  `);
+}
