@@ -3,25 +3,23 @@ export default async function handler(req, res) {
     return res.status(405).send("Method Not Allowed");
   }
 
-  // (Opsiyonel) Basit token koruması
-  const expected = process.env.API_KEY;
-  if (expected) {
-    const auth = req.headers.authorization || "";
-    if (auth !== `Bearer ${expected}`) {
-      return res.status(401).send("Unauthorized");
+  let body = req.body;
+
+  // 🔴 KRİTİK DÜZELTME
+  if (typeof body === "string") {
+    try {
+      body = JSON.parse(body);
+    } catch (e) {
+      return res.status(400).send("Invalid JSON");
     }
   }
 
-  const { html } = req.body || {};
+  const html = body?.html;
+
   if (!html) {
     return res.status(400).send("HTML missing");
   }
 
-  // CDN cache (performans)
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=3600, stale-while-revalidate=86400"
-  );
   res.setHeader("Content-Type", "text/html; charset=utf-8");
-  res.status(200).send(html);
+  res.send(html);
 }
